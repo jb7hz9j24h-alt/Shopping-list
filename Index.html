@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Shopping List</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        margin: 0;
+        background: #f5f7fa;
+        padding: 16px;
+    }
+
+    .card {
+        max-width: 500px;
+        margin: auto;
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 3px 12px rgba(0,0,0,.08);
+    }
+
+    h1 {
+        margin: 0 0 8px;
+        font-size: 1.6rem;
+    }
+
+    .subtitle {
+        color: #666;
+        margin-bottom: 24px;
+    }
+
+    .category {
+        margin-bottom: 24px;
+    }
+
+    .category h2 {
+        margin-bottom: 12px;
+        font-size: 1.1rem;
+    }
+
+    .item {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        border-radius: 10px;
+        margin-bottom: 8px;
+        background: #f8f9fb;
+    }
+
+    .item input {
+        width: 22px;
+        height: 22px;
+        margin-right: 12px;
+    }
+
+    .item label {
+        flex: 1;
+        font-size: 1rem;
+    }
+
+    .footer {
+        position: sticky;
+        bottom: 10px;
+        margin-top: 20px;
+    }
+
+    button {
+        width: 100%;
+        border: none;
+        background: #1e88e5;
+        color: white;
+        padding: 16px;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #1669b2;
+    }
+
+    textarea {
+        width: 100%;
+        margin-top: 16px;
+        min-height: 220px;
+        border-radius: 12px;
+        border: 1px solid #ddd;
+        padding: 12px;
+    }
+
+    .counter {
+        text-align: center;
+        color: #666;
+        margin-top: 10px;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <h1>🛒 Weekly Shopping</h1>
+    <div class="subtitle">
+        Tick the items you need this week.
+    </div>
+
+    <div class="category">
+        <h2>🥛 Dairy</h2>
+
+        <div class="item">
+            <input type="checkbox" checked data-category="Dairy" value="Milk">
+            <label>Milk</label>
+        </div>
+
+        <div class="item">
+            <input type="checkbox" checked data-category="Dairy" value="Yoghurt">
+            <label>Yoghurt</label>
+        </div>
+
+        <div class="item">
+            <input type="checkbox" checked data-category="Dairy" value="Cheese">
+            <label>Cheese</label>
+        </div>
+
+        <div class="item">
+            <input type="checkbox" data-category="Dairy" value="Butter">
+            <label>Butter</label>
+        </div>
+    </div>
+
+    <div class="category">
+        <h2>🍎 Fruit & Veg</h2>
+
+        <div class="item">
+            <input type="checkbox" checked data-category="Fruit & Veg" value="Bananas">
+            <label>Bananas</label>
+        </div>
+
+        <div class="item">
+            <input type="checkbox" checked data-category="Fruit & Veg" value="Apples">
+            <label>Apples</label>
+        </div>
+
+        <div class="item">
+            <input type="checkbox" data-category="Fruit & Veg" value="Tomatoes">
+            <label>Tomatoes</label>
+        </div>
+    </div>
+
+    <div class="category">
+        <h2>🏠 Household</h2>
+
+        <div class="item">
+            <input type="checkbox" data-category="Household" value="Dishwasher Tablets">
+            <label>Dishwasher Tablets</label>
+        </div>
+
+        <div class="item">
+            <input type="checkbox" data-category="Household" value="Toilet Paper">
+            <label>Toilet Paper</label>
+        </div>
+    </div>
+
+    <div class="footer">
+        <button onclick="generateList()">
+            SEND TO TELEGRAM 📤
+        </button>
+    </div>
+
+    <div class="counter" id="counter">0 items selected</div>
+
+    <textarea id="output" placeholder="Generated shopping message..."></textarea>
+
+</div>
+
+<script>
+
+function updateCounter() {
+    const checked = document.querySelectorAll("input[type=checkbox]:checked").length;
+    document.getElementById("counter").innerText =
+        checked + " items selected";
+}
+
+document.querySelectorAll("input[type=checkbox]").forEach(cb => {
+    cb.addEventListener("change", updateCounter);
+});
+
+function generateList() {
+
+    const selected = document.querySelectorAll(
+        "input[type=checkbox]:checked"
+    );
+
+    const grouped = {};
+
+    selected.forEach(item => {
+        const cat = item.dataset.category;
+
+        if (!grouped[cat]) {
+            grouped[cat] = [];
+        }
+
+        grouped[cat].push(item.value);
+    });
+
+    let message = "🛒 Shopping List\n\n";
+
+    for (const category in grouped) {
+
+        message += category + "\n";
+
+        grouped[category].forEach(product => {
+            message += "• " + product + "\n";
+        });
+
+        message += "\n";
+    }
+
+    document.getElementById("output").value = message;
+}
+
+updateCounter();
+
+</script>
+
+</body>
+</html>
